@@ -1,7 +1,8 @@
-import axios from "axios";
+/// <reference types="vite/client" />
 
+import axios from "axios";
 const httpClient = axios.create({
-  baseURL: process.env.VITE_API_BASE_URL,  // o process.env si no usas Vite
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

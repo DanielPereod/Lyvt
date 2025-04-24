@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import ExerciseTracker from "../components/ExerciseTracker";
+import type { Exercise } from "../../../common/types/exercise";
+import type { Workout } from "../../../common/types/workout";
+
+
 import { useParams } from "react-router";
 import { debounce } from "lodash";
+import { WorkoutExercise } from "../../../common/types/workoutExercise";
 
 // Move SetData to a shared type and make weight and reps required
 export interface SetData {
@@ -10,22 +15,9 @@ export interface SetData {
   reps: number;
 }
 
-interface Workout {
-  id: number;
-  name: string;
-  date: string;
-  exercises: Exercise[];
-}
-
-interface Exercise {
-  id: number;
-  name: string;
-  sets: SetData[];
-}
-
 export default function WorkoutPage() {
   const { id } = useParams();
-  const [currentExercise, setCurrentExercise] = React.useState<Exercise | null>(null);
+  const [currentExercise, setCurrentExercise] = React.useState<(Exercise & { sets: SetData[] }) | null>(null);
   const [workout, setWorkout] = React.useState<Workout>({
     id: 0,
     name: "",
@@ -50,22 +42,24 @@ export default function WorkoutPage() {
   }, [id]);
 
   useEffect(() => {
-    const debouncedSave = debounce(async () => {
-      await fetch("http://localhost:8080/workout", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(workout),
-      });
-    }, 1000);
+    const debouncedSave = debounce(async () => {}, 1000);
     return () => debouncedSave.cancel(); // limpiamos al desmontar
   }, [workout]);
-  const addExercise = (exercise: Exercise) => {
-    setWorkout((prev) => {
-      const updatedExercises = [...prev.exercises, exercise];
-      return { ...prev, exercises: updatedExercises };
-    });
-    setCurrentExercise(exercise);
-  };
+
+  const addExercise = (exercise: Omit<WorkoutExercise, "workoutId" | "exerciseId" | "date">) => {
+      const newExercise: WorkoutExercise & Exercise = {
+        ...exercise,
+        workoutId: workout.id,
+        exerciseId: Date.now(),
+        date: new Date().toISOString(),
+        type: "default", // Provide a default or appropriate type value
+      };
+      setWorkout((prev) => {
+        const updatedExercises = [...prev.exercises, newExercise];
+        return { ...prev, exercises: updatedExercises };
+      });
+      setCurrentExercise(newExercise);
+    };
 
   const removeExercise = (id: number) => {
     setWorkout((prev) => {
@@ -107,7 +101,7 @@ export default function WorkoutPage() {
         <div className="grid grid-cols-3 gap-4 mt-4">
           {workout.exercises.map((exercise) => (
             <button
-              onClick={() => setCurrentExercise(exercise)}
+              onClick={() => setCurrentExercise({ ...exercise, type: "default", sets: exercise.sets || [] })}
               key={exercise.id}
               className={
                 `bg-gray-50 dark:bg-gray-700 p-2 rounded-md ` +

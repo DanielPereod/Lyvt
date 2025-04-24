@@ -1,28 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { ExerciseSelectorModal } from "./Exercise/ExerciseSelectorModal";
+import type { Set, WorkoutExercise } from "../../../common/types/workoutExercise";
+import type { Exercise } from "../../../common/types/exercise";
 
-// Define or import the Exercise type
-export interface Exercise {
-  name: string;
-  id: number;
-  type: string;
-}
-
-interface SetData {
-  index: number;
-  weight: number;
-  reps: number;
-}
-
-interface WorkoutExercise {
-  name: string;
-  sets: SetData[];
-}
 
 interface ExerciseTrackerProps {
   initialName?: string;
-  initialSets?: SetData[];
-  onChangeSets?: (sets: SetData[]) => void;
+  initialSets?: Set[];
+  onChangeSets?: (sets: Set[]) => void;
   onChangeName?: (name: string) => void;
 }
 
@@ -36,7 +21,7 @@ export default function ExerciseTracker({
   const [modalOpen, setModalOpen] = useState(false);
 
   const [exerciseName, setExerciseName] = useState(initialName);
-  const [sets, setSets] = useState<SetData[]>(
+  const [sets, setSets] = useState<Set[]>(
     initialSets && initialSets.length > 0
       ? initialSets.map((set, idx) => ({ ...set, index: idx }))
       : [{ index: 0, weight: 0, reps: 1 }]
@@ -63,7 +48,7 @@ export default function ExerciseTracker({
     );
   }, [initialSets]);
 
-  function handleNameChange(name: string): void {
+  const handleNameChange = (name: string): void => {
     setExerciseName(() => {
       if (onChangeName) {
         onChangeName(name);
@@ -71,7 +56,7 @@ export default function ExerciseTracker({
       return name;
     });
   }
-  function handleSetChange(index: number, newweight: number, newReps: number) {
+  const handleSetChange = (index: number, newweight: number, newReps: number) => {
     setSets((prev) => {
       const updated = prev.map((item) => (item.index === index ? { ...item, weight: newweight, reps: newReps } : item));
       if (onChangeSets) onChangeSets(updated);
@@ -79,7 +64,7 @@ export default function ExerciseTracker({
     });
   }
 
-  function addSet() {
+  const addSet = () => {
     setSets((prev) => {
       const updated = [...prev, { index: prev.length > 0 ? prev[prev.length - 1].index + 1 : 0, weight: 0, reps: 1 }];
       if (onChangeSets) onChangeSets(updated);
@@ -87,7 +72,7 @@ export default function ExerciseTracker({
     });
   }
 
-  function removeSet(index: number) {
+  const removeSet = (index: number) => {
     setSets((prev) => {
       const filtered = prev.filter((item) => item.index !== index);
       const updated = filtered.map((item, idx) => ({ ...item, index: idx }));
@@ -100,6 +85,10 @@ export default function ExerciseTracker({
   const exerciseState: WorkoutExercise = {
     name: exerciseName,
     sets,
+    id: 0,
+    workoutId: 0,
+    exerciseId: 0,
+    date: ""
   };
 
   return (

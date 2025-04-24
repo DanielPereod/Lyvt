@@ -16,9 +16,6 @@ export function ExerciseForm({
   const [types, setTypes] = useState<{ name: string }[]>([]);
 
   useEffect(() => {
-    console.log( "ExerciseForm: ", initialName, initialType);
-    console.log( "ExerciseForm selected: ", exerciseName, selectedType);
-
     fetch("http://localhost:8080/exercise/type")
       .then((res) => res.json())
       .then((data) => setTypes(data));

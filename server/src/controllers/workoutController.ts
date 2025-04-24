@@ -55,8 +55,6 @@ export const getWorkoutById = async (req: Request, res: Response) => {
     };
   });
 
-  console.log(exercises);
-
   res.json({
     id: workout.id,
     name: workout.name,
@@ -85,8 +83,8 @@ export const createWorkout = async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     const { name, date } = req.body;
-    await db.insert(workoutsTable).values({ name, date });
-    res.status(201).json({ message: "Workout created" });
+    const workout = await db.insert(workoutsTable).values({ name, date }).returning().get();
+    res.status(201).json(workout);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to create workout" });

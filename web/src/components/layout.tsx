@@ -1,10 +1,12 @@
 import React, { ReactNode, useState, useEffect } from 'react';
+import {useNavigate} from 'react-router';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const navigate = useNavigate();
   const [theme, setTheme] = useState(() => {
     if (typeof window !== 'undefined') {
       if (localStorage.theme) return localStorage.theme;
@@ -31,7 +33,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       <header className="bg-white dark:bg-black dark:text-white p-4 text-xl font-bold flex items-center justify-between">
-        <span>LiftLog</span>
+        <span className='cursor-pointer' onClick={() => navigate("/")}>LiftLog</span>
         <button
           onClick={toggleTheme}
           className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-400"
