@@ -1,0 +1,65 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #5c6ac4;
+}
+
+/* Custom gray palette override for Tailwind */
+:root {
+  --color-gray-50: #f7f7f7;
+  --color-gray-100: #e3e3e3;
+  --color-gray-200: #cfcfcf;
+  --color-gray-300: #b1b1b1;
+  --color-gray-400: #8e8e8e;
+  --color-gray-500: #6b6b6b;
+  --color-gray-600: #4b4b4b;
+  --color-gray-700: #323232;
+  --color-gray-800: #1a1a1a;
+  --color-gray-900: #111111;
+  --color-primary: #5c6ac4;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* ------ Scrollbar ------ */
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+[class*="dark"] ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+[class*="dark"] ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+[class*="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+/* ------ End Scrollbar ------ */
